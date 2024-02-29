@@ -2,6 +2,13 @@
 
 ## ACM Website Competition
 
+### How to Compete
+
+- Fork the repo
+- Build your website
+- Place a PR into main from your fork
+- Once the deadline comes up, we will vote on whose fork to pull into main
+
 ### Requirements
 
 - Member Page
