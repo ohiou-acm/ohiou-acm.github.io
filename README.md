@@ -12,3 +12,9 @@
 03-20-2020
 
 Wednesday after Spring Break
+
+### Things judges may look for
+- cool functionality
+- fast loading
+- platform flexiblity (mobile functionality is a good thing)
+  
