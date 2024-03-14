@@ -4,6 +4,19 @@ img {
 }
 
 mat-toolbar {
-  min-height: 80px;
+  min-height: 90px;
   // font-family: 'AudioWide'
+}
+
+.logo-button {
+  all: unset;
+
+}
+
+button:focus {
+  outline: revert;
+}
+
+.mobileLogo {
+  max-height: 56px;
 }
