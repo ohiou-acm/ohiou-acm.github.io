@@ -103,15 +103,15 @@ export class MembersPageComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // update firebase with new member info
-        this.membersList = this.membersList.reduce((acc: Member[], member) => {
-          if (member.email === result.email) {
-            acc.push(result);
-          } else {
-            acc.push(member);
-          }
-          return acc;
-        }, []);
 
+        const index = this.membersList.findIndex(
+          (m) => m.email === result.email
+        );
+        if (index === -1) {
+          this.membersList.push(result);
+        } else {
+          this.membersList[index] = result;
+        }
         this.groupMembers();
       }
     });

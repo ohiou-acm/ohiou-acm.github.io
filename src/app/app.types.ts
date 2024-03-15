@@ -14,10 +14,16 @@ export const emptyMember: Member = {
   graduationDate: new Date(),
 };
 
-export interface Event {
+export interface EventACM {
   title: string;
   description: string;
   upvotes: number;
   date?: Date;
   presenter?: string;
 }
+
+export const emptyEvent: EventACM = {
+  title: '',
+  description: '',
+  upvotes: 0,
+};

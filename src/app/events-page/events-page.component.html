@@ -1,1 +1,43 @@
-<p>events-page works!</p>
+<div class="text-center">
+  <button class="mx-3 my-3" color="primary" mat-raised-button color="primary" (click)="seeingScheduledEvents = true" [disabled]="seeingScheduledEvents">
+    Scheduled Events
+  </button>
+  <button class="mx-3 mb-3 mt-0 mt-md-3" color="primary" mat-raised-button (click)="seeingScheduledEvents = false" [disabled]="!seeingScheduledEvents">
+    Requested Events
+  </button>
+</div>
+
+@if (seeingScheduledEvents) {
+  <div class="text-center fs-4">
+    Upcoming Events  
+  </div>
+  @if (upcomingEvents.length === 0) {
+    <div class="text-center fs-5">
+      No upcoming events planned. Consider requesting one!
+    </div>
+  }
+
+  @for (event of upcomingEvents; track event.title) {
+    <app-event-card [event]="event"></app-event-card>
+  }
+  <div class="text-center fs-4 mt-3">
+    Past Events  
+  </div>
+  @for (event of pastEvents; track event.title) {
+    <app-event-card [event]="event"></app-event-card>
+  }
+} 
+@else {
+  <div class="text-center my-1">
+    <button class="mx-3" mat-raised-button color="accent" (click)="addEvent()">
+      Request An Event
+    </button>
+  </div>
+  <div class="text-center fs-4">
+    Requested Events  
+  </div>
+  @for (event of requestedEvents; track event.title) {
+    <app-event-card [event]="event" [isRequested]="true" (updateFunct)="updateEvent($event.event)"></app-event-card>
+  }
+}
+
