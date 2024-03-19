@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MemberCardComponent } from '../member-card/member-card.component';
 import { Member } from '../app.types';
@@ -8,8 +8,12 @@ import { MemberFormDialogComponent } from '../member-form-dialog/member-form-dia
 import {
   Firestore,
   collection,
-  collectionData,
   addDoc,
+  setDoc,
+  doc,
+  onSnapshot,
+  QuerySnapshot,
+  DocumentData,
 } from '@angular/fire/firestore';
 import { Subscription, from, mergeMap, of } from 'rxjs';
 
@@ -20,7 +24,7 @@ import { Subscription, from, mergeMap, of } from 'rxjs';
   templateUrl: './members-page.component.html',
   styleUrl: './members-page.component.scss',
 })
-export class MembersPageComponent implements OnInit, OnDestroy {
+export class MembersPageComponent implements OnDestroy {
   constructor(public dialog: MatDialog, private store: Firestore) {}
 
   membersList: Member[] = [];
@@ -35,53 +39,58 @@ export class MembersPageComponent implements OnInit, OnDestroy {
   alumniExpanded = true;
 
   subscription: Subscription = new Subscription();
+
+  // Create a callback to reload data when Firestore has an update
+  // This is done in this way to enable reload as the onSnapshot function is not a promise to be converted into an observable
+  unsubscribeSnapshot = onSnapshot(
+    collection(this.store, 'members'),
+    (querySnapshot: QuerySnapshot<DocumentData, DocumentData>) => {
+      this.membersList = [];
+      querySnapshot.forEach((doc) =>
+        this.membersList.push(this.createMember(doc.id, doc.data()))
+      );
+      this.groupMembers();
+    }
+  );
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    if (this.unsubscribeSnapshot) {
+      this.unsubscribeSnapshot();
+    }
   }
 
-  ngOnInit() {
-    // load users from firebase
-    const memberCollection = collection(this.store, 'members');
-    // create an observable of the members collection
-    const member$ = collectionData(memberCollection);
+  createMember(docID: string, docData: DocumentData): Member {
+    const newMember: Member = {
+      id: docID,
+      name: docData['name'],
+      email: docData['email'],
+      graduationDate: new Date(docData['graduationDate'].seconds * 1000),
+    };
 
-    this.subscription.add(
-      member$.subscribe((members) => {
-        this.membersList = members.map((member) => {
-          const newMember: Member = {
-            name: member['name'],
-            email: member['email'],
-            graduationDate: new Date(member['graduationDate'].seconds * 1000),
-          };
+    if (docData['officer']) {
+      newMember.officer = docData['officer'];
+    }
+    if (docData['employment']) {
+      newMember.employment = docData['employment'];
+    }
+    if (docData['selfBio']) {
+      newMember.selfBio = docData['selfBio'];
+    }
+    if (docData['photoURL']) {
+      newMember.photoURL = docData['photoURL'];
+    }
 
-          if (member['officer']) {
-            newMember.officer = member['officer'];
-          }
-          if (member['employment']) {
-            newMember.employment = member['employment'];
-          }
-          if (member['selfBio']) {
-            newMember.selfBio = member['selfBio'];
-          }
-          if (member['photoURL']) {
-            newMember.photoURL = member['photoURL'];
-          }
-
-          return newMember;
-        });
-
-        // sort members by graduation date, seniors at the top
-        this.membersList.sort((a, b) => {
-          return a.graduationDate.getTime() - b.graduationDate.getTime();
-        });
-
-        this.groupMembers();
-      })
-    );
+    return newMember;
   }
 
   //group members into current officers, current members, and alumni
   groupMembers() {
+    // sort members by graduation date, seniors at the top
+    this.membersList.sort((a, b) => {
+      return a.graduationDate.getTime() - b.graduationDate.getTime();
+    });
+
     this.currentOfficers = [];
     this.currentMembers = [];
     this.alumni = [];
@@ -111,17 +120,20 @@ export class MembersPageComponent implements OnInit, OnDestroy {
         .pipe(
           mergeMap((result) => {
             if (result) {
-              // update firebase with new member info
-              return from(addDoc(collection(this.store, 'members'), result));
+              if (result['id']) {
+                // update existing member
+                return from(
+                  setDoc(doc(this.store, 'members', result['id']), result)
+                );
+              } else {
+                // add new member
+                return from(addDoc(collection(this.store, 'members'), result));
+              }
             }
             return of(null);
           })
         )
-        .subscribe((result) => {
-          if (result) {
-            this.groupMembers();
-          }
-        })
+        .subscribe(() => this.groupMembers())
     );
   }
 }

@@ -40,6 +40,7 @@ export class MemberFormDialogComponent {
     employment: [this.member ? this.member.employment : ''],
     selfBio: [this.member ? this.member.selfBio : ''],
     photoURL: [this.member ? this.member.photoURL : ''],
+    id: [this.member ? this.member.id : ''],
   });
 
   updateMember(): void {

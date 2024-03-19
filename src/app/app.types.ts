@@ -6,6 +6,7 @@ export interface Member {
   employment?: string;
   selfBio?: string;
   photoURL?: string;
+  id?: string;
 }
 
 export const emptyMember: Member = {
