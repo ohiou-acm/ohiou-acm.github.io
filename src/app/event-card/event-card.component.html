@@ -6,7 +6,7 @@
   {
     <form [formGroup]="upvoteToggle" class="text-end me-3">
       <mat-button-toggle-group aria-label="Upvote Event" multiple formControlName="toggle">
-        <mat-button-toggle value=true>
+        <mat-button-toggle [value]="'toggled'">
           <mat-icon aria-hidden="false">thumb_up</mat-icon>
         </mat-button-toggle>
       </mat-button-toggle-group>

@@ -66,20 +66,11 @@ export class MembersPageComponent implements OnDestroy {
       name: docData['name'],
       email: docData['email'],
       graduationDate: new Date(docData['graduationDate'].seconds * 1000),
+      officer: docData['officer'],
+      employment: docData['employment'],
+      selfBio: docData['selfBio'],
+      photoURL: docData['photoURL'],
     };
-
-    if (docData['officer']) {
-      newMember.officer = docData['officer'];
-    }
-    if (docData['employment']) {
-      newMember.employment = docData['employment'];
-    }
-    if (docData['selfBio']) {
-      newMember.selfBio = docData['selfBio'];
-    }
-    if (docData['photoURL']) {
-      newMember.photoURL = docData['photoURL'];
-    }
 
     return newMember;
   }

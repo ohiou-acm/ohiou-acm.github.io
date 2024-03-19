@@ -18,13 +18,15 @@ export const emptyMember: Member = {
 export interface EventACM {
   title: string;
   description: string;
-  upvotes: number;
+  upvotes: string[];
   date?: Date;
   presenter?: string;
+  id: string;
 }
 
 export const emptyEvent: EventACM = {
   title: '',
   description: '',
-  upvotes: 0,
+  upvotes: [],
+  id: '',
 };

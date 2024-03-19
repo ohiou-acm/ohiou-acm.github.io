@@ -26,19 +26,24 @@ export class EventCardComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {}
 
-  // mat toggle button uses string array values
   upvoteToggle = this.fb.group({
-    toggle: [['']],
+    toggle: [''],
   });
 
   ngOnInit(): void {
+    this.upvoteToggle.controls.toggle.setValue(
+      this.event.upvotes.includes('name') ? 'toggled' : ''
+    );
+
     this.upvoteToggle.valueChanges.subscribe((value) => {
       if (value.toggle && value.toggle.length > 0) {
-        this.event.upvotes++;
         // push name
+        this.event.upvotes.push('name');
       } else {
-        this.event.upvotes--;
         // filter out name
+        this.event.upvotes = this.event.upvotes.filter(
+          (name) => name !== 'name'
+        );
       }
       this.updateFunct.emit({ event: this.event });
     });

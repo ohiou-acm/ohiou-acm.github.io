@@ -25,7 +25,7 @@ export class EventFormDialogComponent {
   eventForm = this.fb.group({
     title: ['', Validators.required],
     description: ['', Validators.required],
-    upvotes: [0],
+    upvotes: [[]],
     date: [],
     presenter: [],
   });

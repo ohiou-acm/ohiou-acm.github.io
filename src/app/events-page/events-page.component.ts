@@ -1,9 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { EventACM } from '../app.types';
 import { MatButtonModule } from '@angular/material/button';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EventFormDialogComponent } from '../event-form-dialog/event-form-dialog.component';
+import {
+  DocumentData,
+  Firestore,
+  QuerySnapshot,
+  addDoc,
+  collection,
+  onSnapshot,
+  doc,
+  setDoc,
+} from '@angular/fire/firestore';
+import { Subscription, from, mergeMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-events-page',
@@ -12,37 +23,10 @@ import { EventFormDialogComponent } from '../event-form-dialog/event-form-dialog
   templateUrl: './events-page.component.html',
   styleUrl: './events-page.component.scss',
 })
-export class EventsPageComponent implements OnInit {
-  constructor(public dialog: MatDialog) {}
+export class EventsPageComponent implements OnDestroy {
+  constructor(public dialog: MatDialog, private store: Firestore) {}
 
-  eventsList: EventACM[] = [
-    {
-      title: 'Angular Presentation',
-      description: 'Learn about getting started with Angular',
-      upvotes: 0,
-      date: new Date(2024, 2, 6),
-      presenter: 'Jaret Crist',
-    },
-    {
-      title: 'requested event',
-      description: 'description',
-      upvotes: 0,
-    },
-    {
-      title: 'New Competition & React Presentation',
-      description:
-        'Introduce 2024 ACM Website Building Competition. Also learn the basics about React',
-      upvotes: 0,
-      date: new Date(2024, 1, 28),
-      presenter: 'Owen Salyer',
-    },
-    {
-      title: 'AutoHotKey Showcase',
-      description: 'Show off some interesting AutoHotKey projects',
-      upvotes: 0,
-      presenter: 'Jakob Burkett',
-    },
-  ];
+  eventsList: EventACM[] = [];
 
   upcomingEvents: EventACM[] = [];
   pastEvents: EventACM[] = [];
@@ -50,8 +34,42 @@ export class EventsPageComponent implements OnInit {
 
   seeingScheduledEvents = true;
 
-  ngOnInit(): void {
-    this.sortEvents();
+  subscription: Subscription = new Subscription();
+
+  // Create a callback to reload data when Firestore has an update
+  // This is done in this way to enable reload as the onSnapshot function is not a promise to be converted into an observable
+  unsubscribeSnapshot = onSnapshot(
+    collection(this.store, 'event'),
+    (querySnapshot: QuerySnapshot<DocumentData, DocumentData>) => {
+      this.eventsList = [];
+      querySnapshot.forEach((doc) =>
+        this.eventsList.push(this.createEvent(doc.id, doc.data()))
+      );
+      this.sortEvents();
+    }
+  );
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    if (this.unsubscribeSnapshot) {
+      this.unsubscribeSnapshot();
+    }
+  }
+
+  createEvent(id: string, docData: DocumentData): EventACM {
+    const newEvent: EventACM = {
+      title: docData['title'],
+      description: docData['description'],
+      upvotes: docData['upvotes'],
+      presenter: docData['presenter'],
+      id: id,
+    };
+
+    if (docData['date']) {
+      newEvent.date = new Date(docData['date'].seconds * 1000);
+    }
+
+    return newEvent;
   }
 
   sortEvents() {
@@ -85,28 +103,34 @@ export class EventsPageComponent implements OnInit {
       });
 
       this.requestedEvents.sort((a, b) => {
-        return b.upvotes - a.upvotes;
+        return b.upvotes.length - a.upvotes.length;
       });
     });
   }
 
   updateEvent(event: EventACM) {
-    const index = this.eventsList.findIndex((e) => e.title === event.title);
-    this.eventsList[index] = event;
-
-    this.sortEvents();
+    this.subscription.add(
+      from(setDoc(doc(this.store, 'event', event.id), event)).subscribe(() =>
+        this.sortEvents()
+      )
+    );
   }
 
   addEvent() {
     const dialogRef = this.dialog.open(EventFormDialogComponent);
+    this.subscription.add(
+      dialogRef
+        .afterClosed()
+        .pipe(
+          mergeMap((result) => {
+            if (result) {
+              return from(addDoc(collection(this.store, 'event'), result));
+            }
 
-    dialogRef.afterClosed().subscribe((event: EventACM) => {
-      if (event) {
-        console.log(event);
-
-        this.eventsList.push(event);
-        this.sortEvents();
-      }
-    });
+            return of(null);
+          })
+        )
+        .subscribe(() => this.sortEvents())
+    );
   }
 }
