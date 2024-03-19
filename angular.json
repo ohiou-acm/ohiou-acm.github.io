@@ -110,6 +110,23 @@
               "src/**/*.html"
             ]
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ohiou-acm-website:build:production",
+              "serveTarget": "ohiou-acm-website:serve:production"
+            },
+            "development": {
+              "buildTarget": "ohiou-acm-website:build:development",
+              "serveTarget": "ohiou-acm-website:serve:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }

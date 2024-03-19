@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "ohiou-acm-website": {
+      "hosting": {
+        "ohiou-acm-website": [
+          "ohiou-acm-website"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "ohiou-acm-website"
+  }
+}
