@@ -7,13 +7,18 @@ import {
   signOut,
 } from '@angular/fire/auth';
 import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription, catchError, from, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService implements OnDestroy {
-  constructor(private auth: Auth, private dialog: MatDialog) {}
+  constructor(
+    private auth: Auth,
+    private dialog: MatDialog,
+    private toast: ToastrService
+  ) {}
 
   private user: User | null = null;
 
@@ -38,6 +43,7 @@ export class UserService implements OnDestroy {
           tap((userCredential) => (this.user = userCredential.user)),
           catchError((error: { code: string; message: string }) => {
             console.error(error.code + ': ' + error.message);
+            this.toast.error(error.code + ': ' + error.message);
             return of();
           })
         )
