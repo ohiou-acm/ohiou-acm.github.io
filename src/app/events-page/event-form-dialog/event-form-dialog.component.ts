@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MaterialFormsModule } from '../material-forms.module';
+import { MaterialFormsModule } from '../../material-forms.module';
 
 @Component({
   selector: 'app-event-form-dialog',

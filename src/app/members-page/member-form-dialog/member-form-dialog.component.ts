@@ -6,8 +6,8 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { Member } from '../app.types';
-import { MaterialFormsModule } from '../material-forms.module';
+import { Member } from '../../app.types';
+import { MaterialFormsModule } from '../../material-forms.module';
 
 @Component({
   selector: 'app-member-form-dialog',

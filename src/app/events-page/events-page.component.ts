@@ -1,9 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { EventACM } from '../app.types';
 import { MatButtonModule } from '@angular/material/button';
-import { EventCardComponent } from '../event-card/event-card.component';
+import { EventCardComponent } from './event-card/event-card.component';
 import { MatDialog } from '@angular/material/dialog';
-import { EventFormDialogComponent } from '../event-form-dialog/event-form-dialog.component';
+import { EventFormDialogComponent } from './event-form-dialog/event-form-dialog.component';
 import {
   DocumentData,
   Firestore,

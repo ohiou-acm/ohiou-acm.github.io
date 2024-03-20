@@ -1,10 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MemberCardComponent } from '../member-card/member-card.component';
+import { MemberCardComponent } from './member-card/member-card.component';
 import { Member } from '../app.types';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MemberFormDialogComponent } from '../member-form-dialog/member-form-dialog.component';
+import { MemberFormDialogComponent } from './member-form-dialog/member-form-dialog.component';
 import {
   Firestore,
   collection,
