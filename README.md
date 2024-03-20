@@ -1,5 +1,12 @@
 # OhiouAcmWebsite
 
+This project acts as an information site for Ohio University's ACM Chapter.  
+The site was created using Angular and Firebase. Firebase is used for user login/authentication, and event/member data persistence.
+
+The admin account is ohiouacmwebsite@gmail.com
+
+# Project Information
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.2.
 
 ## Development server
@@ -10,17 +17,13 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+## Build
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Further help
 
