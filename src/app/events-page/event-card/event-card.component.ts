@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { UserService } from '../../user.service';
 
 @Component({
   selector: 'app-event-card',
@@ -24,7 +25,9 @@ export class EventCardComponent implements OnInit {
   @Input() isRequested = false;
   @Output() updateFunct = new EventEmitter();
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private userService: UserService) {}
+
+  user = this.userService.getUser();
 
   upvoteToggle = this.fb.group({
     toggle: [''],
@@ -32,17 +35,19 @@ export class EventCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.upvoteToggle.controls.toggle.setValue(
-      this.event.upvotes.includes('name') ? 'toggled' : ''
+      this.user && this.event.upvotes.includes(this.user.email!)
+        ? 'toggled'
+        : ''
     );
 
     this.upvoteToggle.valueChanges.subscribe((value) => {
       if (value.toggle && value.toggle.length > 0) {
         // push name
-        this.event.upvotes.push('name');
+        this.event.upvotes.push(this.user!.email!);
       } else {
         // filter out name
         this.event.upvotes = this.event.upvotes.filter(
-          (name) => name !== 'name'
+          (name) => name !== this.user!.email!
         );
       }
       this.updateFunct.emit({ event: this.event });

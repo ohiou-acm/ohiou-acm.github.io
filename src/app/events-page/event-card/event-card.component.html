@@ -2,7 +2,7 @@
   <div class="text-center">
     <mat-card-title class="fs-3">{{ event.title }}</mat-card-title>
   </div>
-  @if (isRequested)
+  @if (isRequested && user)
   {
     <form [formGroup]="upvoteToggle" class="text-end me-3">
       <mat-button-toggle-group aria-label="Upvote Event" multiple formControlName="toggle">

@@ -15,6 +15,7 @@ import {
   setDoc,
 } from '@angular/fire/firestore';
 import { Subscription, from, mergeMap, of } from 'rxjs';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-events-page',
@@ -24,7 +25,13 @@ import { Subscription, from, mergeMap, of } from 'rxjs';
   styleUrl: './events-page.component.scss',
 })
 export class EventsPageComponent implements OnDestroy {
-  constructor(public dialog: MatDialog, private store: Firestore) {}
+  constructor(
+    public dialog: MatDialog,
+    private store: Firestore,
+    private userService: UserService
+  ) {}
+
+  user = this.userService.getUser();
 
   eventsList: EventACM[] = [];
 

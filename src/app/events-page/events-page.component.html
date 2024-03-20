@@ -33,6 +33,11 @@
       Request An Event
     </button>
   </div>
+  @if (!user) {
+    <div class="text-center text-white fs-5">
+      Login to vote on events!
+    </div>
+  }
   <div class="text-center fs-4">
     Requested Events  
   </div>

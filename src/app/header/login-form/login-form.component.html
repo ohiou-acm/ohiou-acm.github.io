@@ -1,0 +1,42 @@
+@if (user) {
+  <div mat-dialog-content>
+    Signed in as {{ user.email }}
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button [mat-dialog-close]>Cancel</button>
+    <button mat-raised-button color="warn" (click)="signOut()">Sign Out</button>
+  </div>
+} @else {
+  <form [formGroup]="loginForm">
+    <h1 mat-dialog-title>Sign In / Sign Up</h1>
+    <div mat-dialog-content>
+    <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <p>Email*:</p>
+          <mat-form-field appearance="fill">
+            <input matInput required formControlName="email" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="row">
+          <p>Password*:</p>
+          <mat-form-field appearance="fill">
+            <input matInput formControlName="password" [type]="hidePass ? 'password' : 'text'"/>
+            <button mat-icon-button matSuffix (click)="hidePass = !hidePass" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePass">
+              <mat-icon>{{hidePass ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button [mat-dialog-close]>Cancel</button>
+    <button mat-raised-button color="accent" (click)="login('create')" cdkFocusInitial>Create Account</button>
+    <button mat-raised-button color="primary" (click)="login('signIn')" cdkFocusInitial>Sign In</button>
+  </div>
+</form>
+
+}

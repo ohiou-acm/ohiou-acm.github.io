@@ -1,14 +1,14 @@
 <mat-toolbar color="primary" class="d-none d-sm-block">
   <div class="row">
     <!-- Large Screen Version -->
-    <div class="d-none d-lg-block col-11">
+    <div class="d-none d-lg-block col-10">
       <button (click)="navigateTo('home')" class="logo-button">
         <img class="my-1" src="assets/acm-logo.svg" alt="ACM Logo" />
       </button>
       Ohio University Association for Computing Machinery
     </div>
     <!-- Medium Screen Version -->
-    <div class="d-none d-sm-block d-lg-none col-10">
+    <div class="d-none d-sm-block d-lg-none col-9">
       <button (click)="navigateTo('home')" class="logo-button">
         <img class="my-1" src="assets/acm-logo.svg" alt="ACM Logo" />
       </button>
@@ -18,7 +18,7 @@
       <button
         mat-icon-button
         [matMenuTriggerFor]="menu"
-        aria-label="Example icon-button with a menu"
+        aria-label="Navigation Menu"
       >
         <mat-icon aria-hidden="false" aria-label="Expand Navigation"
           >more_vert</mat-icon
@@ -47,6 +47,9 @@
           Events
         </button>
       </mat-menu>
+      <button mat-icon-button aria-label="User" (click)="openUserDialog()">
+        <mat-icon>person</mat-icon>
+      </button>
     </div>
   </div>
 </mat-toolbar>
@@ -74,6 +77,9 @@
       (click)="navigateTo('/events')"
     >
       Events
+    </button>
+    <button mat-icon-button aria-label="User" (click)="openUserDialog()">
+      <mat-icon>person</mat-icon>
     </button>
   </mat-toolbar-row>
 </mat-toolbar>

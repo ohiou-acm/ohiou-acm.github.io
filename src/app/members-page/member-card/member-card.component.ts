@@ -3,6 +3,7 @@ import { Member, emptyMember } from '../../app.types';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { UserService } from '../../user.service';
 
 @Component({
   selector: 'app-member-card',
@@ -12,12 +13,15 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './member-card.component.scss',
 })
 export class MemberCardComponent implements OnInit {
+  constructor(private userService: UserService) {}
+
   @Input() member: Member = emptyMember;
   @Output() updateFunct = new EventEmitter();
 
   gradSemester: string = 'Spring';
 
   canEdit = false;
+  user = this.userService.getUser();
 
   ngOnInit(): void {
     this.gradSemester = this.getSemFromMonth(
@@ -25,7 +29,9 @@ export class MemberCardComponent implements OnInit {
     );
 
     // Can Edit based on if logged in as user or as admin
-    this.canEdit = true;
+    this.canEdit =
+      this.user?.email === this.member.email ||
+      this.user?.email === 'ohiouacmwebsite@gmail.com';
   }
 
   // Should always be May (4), August (7), or December (11)
