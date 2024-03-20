@@ -1,0 +1,50 @@
+@if (user)
+{
+<div class="text-center my-1 text-white">
+  Not in the list? Add yourself here!
+    <button class="mx-3" mat-raised-button color="primary" (click)="updateMember()">
+      Add Yourself
+    </button>
+  </div>
+} @else {
+  <div class="text-center my-1 text-white">
+    Not in the list? Login to add yourself!
+  </div>
+}
+
+<div style="background-color: grey">
+  <mat-accordion multi="true">
+    <mat-expansion-panel class="my-3" expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Current Officers</h2>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      @for (member of currentOfficers; track member.email) {
+        <app-member-card [member]="member" (updateFunct)="updateMember(member)"></app-member-card>
+      }
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="my-3">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Current Members</h2>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      @for (member of currentMembers; track member.email) {
+        <app-member-card [member]="member" (updateFunct)="updateMember(member)"></app-member-card>
+      }
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="my-3">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Alumni</h2>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      @for (member of alumni; track member.email) {
+        <app-member-card [member]="member" (updateFunct)="updateMember(member)"></app-member-card>
+      }
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

@@ -1,0 +1,61 @@
+<form [formGroup]="memberForm">
+  <h1 mat-dialog-title>Update Member</h1>
+  <div mat-dialog-content>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="row">
+          <p>Name*:</p>
+          <mat-form-field appearance="fill">
+            <input matInput required formControlName="name" />
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <p>Officer:</p>
+          <mat-form-field appearance="fill">
+            <mat-select formControlName="officer">
+              <mat-option value=''></mat-option>
+              <mat-option value='president'>President</mat-option>
+              <mat-option value='vice-president'>Vice-President</mat-option>
+              <mat-option value='treasurer'>Treasurer</mat-option>
+              <mat-option value='secretary'>Secretary</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <p>Employment:</p>
+          <mat-form-field appearance="fill">
+            <input matInput formControlName="employment" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="row">
+          <p>Graduation Date*:</p>
+          <mat-form-field appearance="fill">
+            <mat-label>Choose a date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="graduationDate">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="row my-3">
+          <p>Photo URL:</p>
+          <mat-form-field appearance="fill">
+            <input matInput formControlName="photoURL" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <p>Self Bio:</p>
+      <mat-form-field appearance="fill">
+        <input matInput formControlName="selfBio" />
+      </mat-form-field>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button [mat-dialog-close]>Cancel</button>
+    <button mat-raised-button color="primary" (click)="updateMember()" cdkFocusInitial>Update</button>
+  </div>
+</form>
