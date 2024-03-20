@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { EventACM, emptyEvent } from '../../app.types';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +13,8 @@ import { CommonModule } from '@angular/common';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../user.service';
+import { Subscription } from 'rxjs';
+import { User } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-event-card',
@@ -20,24 +29,36 @@ import { UserService } from '../../user.service';
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.scss',
 })
-export class EventCardComponent implements OnInit {
+export class EventCardComponent implements OnInit, OnDestroy {
   @Input() event: EventACM = emptyEvent;
   @Input() isRequested = false;
   @Output() updateFunct = new EventEmitter();
 
   constructor(private fb: FormBuilder, private userService: UserService) {}
 
-  user = this.userService.getUser();
+  user: User | null = null;
 
   upvoteToggle = this.fb.group({
     toggle: [''],
   });
 
+  subscription = new Subscription();
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   ngOnInit(): void {
-    this.upvoteToggle.controls.toggle.setValue(
-      this.user && this.event.upvotes.includes(this.user.email!)
-        ? 'toggled'
-        : ''
+    this.subscription.add(
+      this.userService.getUser().subscribe((user) => {
+        this.user = user;
+
+        this.upvoteToggle.controls.toggle.setValue(
+          this.user && this.event.upvotes.includes(this.user.email!)
+            ? 'toggled'
+            : ''
+        );
+      })
     );
 
     this.upvoteToggle.valueChanges.subscribe((value) => {

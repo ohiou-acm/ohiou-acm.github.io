@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EventACM } from '../app.types';
 import { MatButtonModule } from '@angular/material/button';
 import { EventCardComponent } from './event-card/event-card.component';
@@ -16,6 +16,7 @@ import {
 } from '@angular/fire/firestore';
 import { Subscription, from, mergeMap, of } from 'rxjs';
 import { UserService } from '../user.service';
+import { User } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-events-page',
@@ -24,14 +25,14 @@ import { UserService } from '../user.service';
   templateUrl: './events-page.component.html',
   styleUrl: './events-page.component.scss',
 })
-export class EventsPageComponent implements OnDestroy {
+export class EventsPageComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private store: Firestore,
     private userService: UserService
   ) {}
 
-  user = this.userService.getUser();
+  user: User | null = null;
 
   eventsList: EventACM[] = [];
 
@@ -42,6 +43,12 @@ export class EventsPageComponent implements OnDestroy {
   seeingScheduledEvents = true;
 
   subscription: Subscription = new Subscription();
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.userService.getUser().subscribe((user) => (this.user = user))
+    );
+  }
 
   // Create a callback to reload data when Firestore has an update
   // This is done in this way to enable reload as the onSnapshot function is not a promise to be converted into an observable

@@ -8,7 +8,15 @@ import {
 } from '@angular/fire/auth';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription, catchError, from, of, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  catchError,
+  from,
+  of,
+  tap,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +28,9 @@ export class UserService implements OnDestroy {
     private toast: ToastrService
   ) {}
 
-  private user: User | null = null;
+  private user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(
+    null
+  );
 
   subscription = new Subscription();
 
@@ -28,8 +38,8 @@ export class UserService implements OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  getUser(): User | null {
-    return this.user;
+  getUser(): Observable<User | null> {
+    return this.user.asObservable();
   }
 
   signIn(email: string, password: string, createAcct: boolean = false): void {
@@ -40,7 +50,7 @@ export class UserService implements OnDestroy {
     this.subscription.add(
       observable
         .pipe(
-          tap((userCredential) => (this.user = userCredential.user)),
+          tap((userCredential) => this.user.next(userCredential.user)),
           catchError((error: { code: string; message: string }) => {
             console.error(error.code + ': ' + error.message);
             this.toast.error(error.code + ': ' + error.message);
@@ -53,7 +63,7 @@ export class UserService implements OnDestroy {
 
   signOut() {
     this.subscription.add(
-      from(signOut(this.auth)).subscribe(() => (this.user = null))
+      from(signOut(this.auth)).subscribe(() => this.user.next(null))
     );
   }
 }

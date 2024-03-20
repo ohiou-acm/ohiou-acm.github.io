@@ -1,9 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Member, emptyMember } from '../../app.types';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { UserService } from '../../user.service';
+import { User } from '@angular/fire/auth';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-member-card',
@@ -12,7 +21,7 @@ import { UserService } from '../../user.service';
   templateUrl: './member-card.component.html',
   styleUrl: './member-card.component.scss',
 })
-export class MemberCardComponent implements OnInit {
+export class MemberCardComponent implements OnInit, OnDestroy {
   constructor(private userService: UserService) {}
 
   @Input() member: Member = emptyMember;
@@ -21,17 +30,29 @@ export class MemberCardComponent implements OnInit {
   gradSemester: string = 'Spring';
 
   canEdit = false;
-  user = this.userService.getUser();
+  user: User | null = null;
+
+  subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
+    this.subscription.add(
+      this.userService.getUser().subscribe((user) => {
+        this.user = user;
+
+        // Can Edit based on if logged in as user or as admin
+        this.canEdit =
+          this.user?.email === this.member.email ||
+          this.user?.email === 'ohiouacmwebsite@gmail.com';
+      })
+    );
+
     this.gradSemester = this.getSemFromMonth(
       this.member.graduationDate.getMonth()
     );
+  }
 
-    // Can Edit based on if logged in as user or as admin
-    this.canEdit =
-      this.user?.email === this.member.email ||
-      this.user?.email === 'ohiouacmwebsite@gmail.com';
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   // Should always be May (4), August (7), or December (11)

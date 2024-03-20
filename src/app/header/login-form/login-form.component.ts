@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '../../user.service';
 import { MaterialFormsModule } from '../../material-forms.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { User } from '@angular/fire/auth';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login-form',
@@ -19,14 +21,26 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss',
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<LoginFormComponent>,
     private userService: UserService
   ) {}
 
-  user = this.userService.getUser();
+  subscription: Subscription = new Subscription();
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.userService.getUser().subscribe((user) => (this.user = user))
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  user: User | null = null;
 
   hidePass = true;
 

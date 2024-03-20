@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent implements OnDestroy {
+export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private userService: UserService,
@@ -28,12 +28,18 @@ export class HeaderComponent implements OnDestroy {
     this.router.navigate([route]);
   }
 
-  user: User | null = this.userService.getUser();
+  user: User | null = null;
 
   subscription = new Subscription();
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.userService.getUser().subscribe((user) => (this.user = user))
+    );
   }
 
   openUserDialog() {
