@@ -1,9 +1,16 @@
+@if (user)
+{
 <div class="text-center my-1 text-white">
   Not in the list? Add yourself here!
-  <button class="mx-3" mat-raised-button color="primary" (click)="updateMember()">
-    Add Yourself
-  </button>
-</div>
+    <button class="mx-3" mat-raised-button color="primary" (click)="updateMember()">
+      Add Yourself
+    </button>
+  </div>
+} @else {
+  <div class="text-center my-1 text-white">
+    Not in the list? Login to add yourself!
+  </div>
+}
 
 <div style="background-color: grey">
   <mat-accordion multi="true">

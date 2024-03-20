@@ -25,22 +25,22 @@ export class MemberFormDialogComponent {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<MemberFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public member: Member
+    @Inject(MAT_DIALOG_DATA) public data: { member: Member; email: string }
   ) {}
 
   // Default values to passed in data or empty
   memberForm = this.fb.group({
-    name: [this.member ? this.member.name : '', Validators.required],
-    email: [this.member ? this.member.email : '', Validators.required],
-    officer: [this.member ? this.member.officer : ''],
+    name: [this.data.member ? this.data.member.name : '', Validators.required],
+    email: [this.data.email, Validators.required],
+    officer: [this.data.member ? this.data.member.officer : ''],
     graduationDate: [
-      this.member ? this.member.graduationDate : new Date(),
+      this.data.member ? this.data.member.graduationDate : new Date(),
       Validators.required,
     ],
-    employment: [this.member ? this.member.employment : ''],
-    selfBio: [this.member ? this.member.selfBio : ''],
-    photoURL: [this.member ? this.member.photoURL : ''],
-    id: [this.member ? this.member.id : ''],
+    employment: [this.data.member ? this.data.member.employment : ''],
+    selfBio: [this.data.member ? this.data.member.selfBio : ''],
+    photoURL: [this.data.member ? this.data.member.photoURL : undefined],
+    id: [this.data.member ? this.data.member.id : ''],
   });
 
   updateMember(): void {

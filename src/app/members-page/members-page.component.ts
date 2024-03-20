@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MemberCardComponent } from './member-card/member-card.component';
 import { Member } from '../app.types';
@@ -16,6 +16,8 @@ import {
   DocumentData,
 } from '@angular/fire/firestore';
 import { Subscription, from, mergeMap, of } from 'rxjs';
+import { User } from '@angular/fire/auth';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-members-page',
@@ -24,8 +26,12 @@ import { Subscription, from, mergeMap, of } from 'rxjs';
   templateUrl: './members-page.component.html',
   styleUrl: './members-page.component.scss',
 })
-export class MembersPageComponent implements OnDestroy {
-  constructor(public dialog: MatDialog, private store: Firestore) {}
+export class MembersPageComponent implements OnInit, OnDestroy {
+  constructor(
+    public dialog: MatDialog,
+    private store: Firestore,
+    private userService: UserService
+  ) {}
 
   membersList: Member[] = [];
 
@@ -39,6 +45,16 @@ export class MembersPageComponent implements OnDestroy {
   alumniExpanded = true;
 
   subscription: Subscription = new Subscription();
+
+  user: User | null = null;
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.userService.getUser().subscribe((user) => {
+        this.user = user;
+      })
+    );
+  }
 
   // Create a callback to reload data when Firestore has an update
   // This is done in this way to enable reload as the onSnapshot function is not a promise to be converted into an observable
@@ -102,7 +118,7 @@ export class MembersPageComponent implements OnDestroy {
   // if user signed in then allow them to create themselves as a member
   updateMember(member?: Member) {
     const dialogRef = this.dialog.open(MemberFormDialogComponent, {
-      data: member,
+      data: { member: member, email: this.user!.email },
     });
 
     this.subscription.add(
