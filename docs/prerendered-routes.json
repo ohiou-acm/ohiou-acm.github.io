@@ -1,0 +1,7 @@
+{
+  "routes": [
+    "/events",
+    "/home",
+    "/members"
+  ]
+}
