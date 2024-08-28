@@ -1,0 +1,47 @@
+:root {
+    --background-color: white;
+    --text-color: black;
+    --ou-green: rgb(44, 103, 80);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: black;
+        --text-color: white;
+    }
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: monospace;
+    text-align: center;
+    margin: auto;
+    max-width: 60rem;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: large;
+}
+
+a:hover {
+    color: var(--ou-green);
+}
+
+nav {
+    display: flex;
+    a {
+        margin: 1rem 1rem 0.5rem 1rem;
+    }
+}
+
+img {
+    padding-top: 1rem;
+    max-width: 90%;
+}
+
+h3 {
+    color: #B7B7B7
+}
