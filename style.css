@@ -45,3 +45,8 @@ img {
 h3 {
     color: #B7B7B7
 }
+
+iframe {
+    min-width: 60rem;
+    min-height: 40rem;
+}
